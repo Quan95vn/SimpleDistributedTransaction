@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Order.Data.Context
 {
-    public class OrderContext : DbContext
+    public class OrderDbContext : DbContext
     {
-        public OrderContext(DbContextOptions options) : base(options)
+        public OrderDbContext(DbContextOptions options) : base(options)
         {
         }
 

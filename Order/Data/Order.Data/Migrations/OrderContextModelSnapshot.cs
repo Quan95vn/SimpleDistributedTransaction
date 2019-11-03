@@ -8,7 +8,7 @@ using Order.Data.Context;
 
 namespace Order.Data.Migrations
 {
-    [DbContext(typeof(OrderContext))]
+    [DbContext(typeof(OrderDbContext))]
     partial class OrderContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

@@ -9,7 +9,7 @@ using Product.Data.Context;
 
 namespace Product.Data.Migrations
 {
-    [DbContext(typeof(ProductContext))]
+    [DbContext(typeof(ProductDbContext))]
     [Migration("20191103160353_InitDB")]
     partial class InitDB
     {

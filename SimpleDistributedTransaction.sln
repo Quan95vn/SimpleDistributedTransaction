@@ -37,6 +37,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Product.Api", "Product\Api\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Order.Api", "Order\Api\Order.Api\Order.Api.csproj", "{B9735C52-02BF-4979-AFA4-99968A0DD0B8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infra.IoC", "Infra.IoC", "{BFC22524-64DF-49C1-8508-D2C4B9F0FB5A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleDistributedTransactio.Infra.IoC", "Infra.IoC\SimpleDistributedTransactio.Infra.IoC\SimpleDistributedTransactio.Infra.IoC.csproj", "{1B737F3C-2B4E-4C80-BC7B-CA0600E60507}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,6 +71,10 @@ Global
 		{B9735C52-02BF-4979-AFA4-99968A0DD0B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9735C52-02BF-4979-AFA4-99968A0DD0B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B9735C52-02BF-4979-AFA4-99968A0DD0B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B737F3C-2B4E-4C80-BC7B-CA0600E60507}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B737F3C-2B4E-4C80-BC7B-CA0600E60507}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B737F3C-2B4E-4C80-BC7B-CA0600E60507}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B737F3C-2B4E-4C80-BC7B-CA0600E60507}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -86,6 +94,7 @@ Global
 		{AA149252-A964-4CB9-8D1E-723E32DE8D07} = {04E360A3-61F8-4EF4-820D-EBFB239A3E7F}
 		{6196B90D-7018-4A38-861B-EF660EEF6125} = {4C225229-5F38-4431-99CB-AB3CB008E207}
 		{B9735C52-02BF-4979-AFA4-99968A0DD0B8} = {77D07B53-A962-4BA1-9F70-03EEF0E00A94}
+		{1B737F3C-2B4E-4C80-BC7B-CA0600E60507} = {BFC22524-64DF-49C1-8508-D2C4B9F0FB5A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {15374B15-132C-4FF0-A7CF-D1134CE45CD0}

@@ -9,7 +9,7 @@ using Order.Data.Context;
 
 namespace Order.Data.Migrations
 {
-    [DbContext(typeof(OrderContext))]
+    [DbContext(typeof(OrderDbContext))]
     [Migration("20191103160900_InitOrderDb")]
     partial class InitOrderDb
     {

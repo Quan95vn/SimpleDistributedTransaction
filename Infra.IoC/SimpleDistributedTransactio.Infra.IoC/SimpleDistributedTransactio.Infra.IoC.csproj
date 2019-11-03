@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Order\Data\Order.Data\Order.Data.csproj" />
+    <ProjectReference Include="..\..\Order\Domain\Order.Domain\Order.Domain.csproj" />
+    <ProjectReference Include="..\..\Product\Data\Product.Data\Product.Data.csproj" />
+  </ItemGroup>
+
+</Project>

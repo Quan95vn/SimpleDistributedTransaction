@@ -5,11 +5,11 @@ using System.Text;
 
 namespace Product.Data.Context
 {
-    public class ProductContext : DbContext
+    public class ProductDbContext : DbContext
     {
       
 
-        public ProductContext(DbContextOptions<ProductContext> options) : base(options)
+        public ProductDbContext(DbContextOptions<ProductDbContext> options) : base(options)
         {
         }
 
