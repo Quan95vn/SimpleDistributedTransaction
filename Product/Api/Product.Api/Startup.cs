@@ -12,6 +12,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Product.Data.Context;
+using SimpleDistributedTransactio.Infra.IoC;
+using MassTransit;
 
 namespace Product.Api
 {
@@ -33,6 +35,25 @@ namespace Product.Api
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            #region MassTransit
+
+            services.Configure<AppConfig>(Configuration.GetSection("AppConfig"));
+            services.AddMassTransit(cfg =>
+            {
+                cfg.AddBus(ConfigureBus);
+
+                //cfg.AddRequestClient<SubmitOrder>();
+            });
+
+            #endregion
+           
+            RegisterServices(services);
+        }
+
+        private void RegisterServices(IServiceCollection services)
+        {
+            DependencyContainer.RegisterServices(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,6 +71,19 @@ namespace Product.Api
 
             app.UseHttpsRedirection();
             app.UseMvc();
+        }
+
+        static IBusControl ConfigureBus(IServiceProvider provider)
+        {
+            var options = provider.GetRequiredService<IOptions<AppConfig>>().Value;
+            return Bus.Factory.CreateUsingRabbitMq(cfg =>
+            {
+                var host = cfg.Host(options.Host, options.VirtualHost, h =>
+                {
+                    h.Username(options.Username);
+                    h.Password(options.Password);
+                });
+            });
         }
     }
 }
