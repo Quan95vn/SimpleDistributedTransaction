@@ -11,6 +11,12 @@ namespace Contracts
     {
         Guid ProductId { get; }
 
+        string Name { get; }
+
+        decimal Price { get; }
+
+        int QuantityInStock { get; }
+
         DateTime CreatedDate { get; }
     }
 }

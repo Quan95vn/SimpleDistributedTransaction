@@ -1,21 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Contracts;
+using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Product.Data.Context;
 using SimpleDistributedTransactio.Infra.IoC;
-using MassTransit;
-using Microsoft.Extensions.Hosting;
-using Contracts;
+using System;
 
 namespace Product.Api
 {
@@ -38,6 +33,8 @@ namespace Product.Api
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+            RegisterServices(services);
+
             #region MassTransit
 
             services.Configure<AppConfig>(Configuration.GetSection("AppConfig"));
@@ -47,11 +44,10 @@ namespace Product.Api
 
                 cfg.AddRequestClient<CreateProduct>();
             });
-
             services.AddSingleton<IHostedService, MassTransitApiHostedService>();
-            #endregion
 
-            RegisterServices(services);
+            #endregion MassTransit
+
         }
 
         private void RegisterServices(IServiceCollection services)
@@ -76,7 +72,7 @@ namespace Product.Api
             app.UseMvc();
         }
 
-        static IBusControl ConfigureBus(IServiceProvider provider)
+        private static IBusControl ConfigureBus(IServiceProvider provider)
         {
             var options = provider.GetRequiredService<IOptions<AppConfig>>().Value;
             return Bus.Factory.CreateUsingRabbitMq(cfg =>

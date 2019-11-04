@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Contracts;
 using MassTransit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Product.Api.ViewModels;
 
 namespace Product.Api.Controllers
@@ -34,17 +36,39 @@ namespace Product.Api.Controllers
         /// <param name="value">The value.</param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<HttpResponseMessage> Post([FromBody] CreateProductViewModel value)
+        public async Task<IActionResult> Post([FromBody] CreateProductViewModel value)
         {
-            var respond = await _createProductClient.GetResponse<ProductCreated>(new
+            try
             {
-                ProductId = value.ProductId,
-                Name = value.Name,
-                Price = value.Price,
-                CreatedDate = value.CreatedDate,
-            });
+                if (!ModelState.IsValid)
+                    throw new Exception("Invalid model state");
 
-            return null;
+                var response = await _createProductClient.GetResponse<ProductCreated>(new
+                {
+                    ProductId = NewId.NextGuid(),
+                    value.Name,
+                    value.Price,
+                    value.QuantityInStock,
+                    value.CreatedDate
+                });
+
+                var obj = new
+                {
+                    isSuccess = true,
+                    data = response.Message
+                };
+
+                return Content(JsonConvert.SerializeObject(obj));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    isSuccess = false,
+                    errors = ex.Message
+                });
+            }
+
         }
     }
 }

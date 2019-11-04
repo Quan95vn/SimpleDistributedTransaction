@@ -7,13 +7,14 @@ using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Product.Api
+namespace Console.Service
 {
-    public class MassTransitApiHostedService : IHostedService
+    public class MassTransitConsoleHostedService :
+       IHostedService
     {
-        readonly IBusControl _bus;
+        private readonly IBusControl _bus;
 
-        public MassTransitApiHostedService(IBusControl bus, ILoggerFactory loggerFactory)
+        public MassTransitConsoleHostedService(IBusControl bus, ILoggerFactory loggerFactory)
         {
             _bus = bus;
 
