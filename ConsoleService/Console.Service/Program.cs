@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace Console.Service
@@ -16,6 +17,7 @@ namespace Console.Service
     {
         private static async Task Main(string[] args)
         {
+
             var builder = new HostBuilder()
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
@@ -49,7 +51,7 @@ namespace Console.Service
             await builder.RunConsoleAsync().ConfigureAwait(false);
         }
 
-        private static IBusControl ConfigureBus(IServiceProvider provider)
+        static IBusControl ConfigureBus(IServiceProvider provider)
         {
             var options = provider.GetRequiredService<IOptions<AppConfig>>().Value;
 
@@ -60,8 +62,6 @@ namespace Console.Service
                     h.Username(options.Username);
                     h.Password(options.Password);
                 });
-
-                //cfg.UseInMemoryScheduler();
 
                 cfg.ConfigureEndpoints(provider, new KebabCaseEndpointNameFormatter());
             });
