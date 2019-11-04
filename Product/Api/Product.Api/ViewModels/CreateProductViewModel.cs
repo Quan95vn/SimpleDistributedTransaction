@@ -9,9 +9,9 @@ namespace Product.Api.ViewModels
     {
         public Guid ProductId { get; set; }
 
-        public string Name { get; private set; }
+        public string Name { get; set; }
 
-        public decimal Price { get; private set; }
+        public decimal Price { get; set; }
 
         public DateTime CreatedDate => DateTime.Now;
     }

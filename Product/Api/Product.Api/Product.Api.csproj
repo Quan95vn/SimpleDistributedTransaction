@@ -14,14 +14,12 @@
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.6" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Infra.IoC\SimpleDistributedTransactio.Infra.IoC\SimpleDistributedTransactio.Infra.IoC.csproj" />
+    <ProjectReference Include="..\..\..\Infra.MassTransit\Contracts\Contracts.csproj" />
     <ProjectReference Include="..\..\Data\Product.Data\Product.Data.csproj" />
   </ItemGroup>
 

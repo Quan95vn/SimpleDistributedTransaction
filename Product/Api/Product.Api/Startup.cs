@@ -14,6 +14,8 @@ using Microsoft.Extensions.Options;
 using Product.Data.Context;
 using SimpleDistributedTransactio.Infra.IoC;
 using MassTransit;
+using Microsoft.Extensions.Hosting;
+using Contracts;
 
 namespace Product.Api
 {
@@ -43,11 +45,12 @@ namespace Product.Api
             {
                 cfg.AddBus(ConfigureBus);
 
-                //cfg.AddRequestClient<SubmitOrder>();
+                cfg.AddRequestClient<CreateProduct>();
             });
 
+            services.AddSingleton<IHostedService, MassTransitApiHostedService>();
             #endregion
-           
+
             RegisterServices(services);
         }
 
@@ -57,7 +60,7 @@ namespace Product.Api
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, Microsoft.AspNetCore.Hosting.IHostingEnvironment env)
         {
             if (env.IsDevelopment())
             {
