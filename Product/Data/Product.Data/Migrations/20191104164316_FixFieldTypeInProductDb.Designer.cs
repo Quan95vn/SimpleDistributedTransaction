@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Product.Data.Context;
 
 namespace Product.Data.Migrations
 {
     [DbContext(typeof(ProductDbContext))]
-    partial class ProductContextModelSnapshot : ModelSnapshot
+    [Migration("20191104164316_FixFieldTypeInProductDb")]
+    partial class FixFieldTypeInProductDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -2,11 +2,16 @@
 using MassTransit;
 using MassTransit.Definition;
 using MassTransit.Saga;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Order.Data.Context;
+using Product.Data.Context;
+using Product.Domain.Consumers;
+using SimpleDistributedTransactio.Infra.IoC;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -29,11 +34,25 @@ namespace Console.Service
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.Configure<AppConfig>(hostContext.Configuration.GetSection("AppConfig"));
+                    var productDbConnectionString = hostContext.Configuration.GetSection("ConnectionStrings").GetSection("ProductDbConnection").Value;
+                    var orderDbConnectionString = hostContext.Configuration.GetSection("ConnectionStrings").GetSection("OrderDbConnection").Value;
 
+                    services.AddDbContext<ProductDbContext>(options =>
+                    {
+                        options.UseSqlServer(productDbConnectionString);
+                    });
+
+                    services.AddDbContext<OrderDbContext>(options =>
+                    {
+                        options.UseSqlServer(orderDbConnectionString);
+                    });
+
+                    services.Configure<AppConfig>(hostContext.Configuration.GetSection("AppConfig"));
                     services.AddMassTransit(cfg =>
                     {
+                        cfg.AddConsumersFromNamespaceContaining<ProductConsumerAnchor>();
                         cfg.AddConsumersFromNamespaceContaining<ConsumerAnchor>();
+
                         //cfg.AddSagaStateMachinesFromNamespaceContaining<StateMachineAnchor>();
                         cfg.AddBus(ConfigureBus);
                     });
@@ -41,6 +60,9 @@ namespace Console.Service
                     //services.AddSingleton(typeof(ISagaRepository<>), typeof(InMemorySagaRepository<>));
 
                     services.AddSingleton<IHostedService, MassTransitConsoleHostedService>();
+
+                    // Add resolver
+                    DependencyContainer.RegisterServices(services);
                 })
                 .ConfigureLogging((hostingContext, logging) =>
                 {
@@ -49,6 +71,12 @@ namespace Console.Service
                 });
 
             await builder.RunConsoleAsync().ConfigureAwait(false);
+        }
+
+        static string ConfigureConnectionString(IServiceProvider provider)
+        {
+            var options = provider.GetRequiredService<IOptions<ConnectionString>>().Value;
+            return options.DbConnection;
         }
 
         static IBusControl ConfigureBus(IServiceProvider provider)

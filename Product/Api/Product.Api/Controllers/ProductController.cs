@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Product.Api.ViewModels;
+using Product.Domain.Interfaces;
 
 namespace Product.Api.Controllers
 {
@@ -18,10 +19,12 @@ namespace Product.Api.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IRequestClient<CreateProduct> _createProductClient;
+        private readonly IProductRepository _productRepository;
 
-        public ProductController(IRequestClient<CreateProduct> createProductClient)
+        public ProductController(IRequestClient<CreateProduct> createProductClient, IProductRepository productRepository)
         {
             _createProductClient = createProductClient;
+            _productRepository = productRepository;
         }
 
         [HttpGet("{id}")]
@@ -40,6 +43,7 @@ namespace Product.Api.Controllers
         {
             try
             {
+               //await _productRepository.Add(new Domain.Models.Product(NewId.NextGuid(), value.Name , value.Price, value.QuantityInStock, value.CreatedDate));
                 if (!ModelState.IsValid)
                     throw new Exception("Invalid model state");
 
@@ -55,7 +59,7 @@ namespace Product.Api.Controllers
                 var obj = new
                 {
                     isSuccess = true,
-                    data = response.Message
+                    data = response.Message.ProductId
                 };
 
                 return Content(JsonConvert.SerializeObject(obj));

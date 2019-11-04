@@ -34,7 +34,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Infra.IoC\SimpleDistributedTransactio.Infra.IoC\SimpleDistributedTransactio.Infra.IoC.csproj" />
     <ProjectReference Include="..\..\Infra.MassTransit\Contracts\Contracts.csproj" />
+    <ProjectReference Include="..\..\Product\Domain\Product.Domain\Product.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>

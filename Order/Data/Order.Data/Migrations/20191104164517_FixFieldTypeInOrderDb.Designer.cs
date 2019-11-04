@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Order.Data.Context;
 
 namespace Order.Data.Migrations
 {
     [DbContext(typeof(OrderDbContext))]
-    partial class OrderContextModelSnapshot : ModelSnapshot
+    [Migration("20191104164517_FixFieldTypeInOrderDb")]
+    partial class FixFieldTypeInOrderDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

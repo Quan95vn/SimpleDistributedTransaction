@@ -9,6 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Product.Data.Context;
+using Product.Data.Repository;
+using Product.Domain.Interfaces;
 using SimpleDistributedTransactio.Infra.IoC;
 using System;
 
@@ -33,7 +35,6 @@ namespace Product.Api
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            RegisterServices(services);
 
             #region MassTransit
 
@@ -48,6 +49,7 @@ namespace Product.Api
 
             #endregion MassTransit
 
+            RegisterServices(services);
         }
 
         private void RegisterServices(IServiceCollection services)
