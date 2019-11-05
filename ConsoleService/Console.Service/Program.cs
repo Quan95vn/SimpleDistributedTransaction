@@ -1,7 +1,6 @@
 ﻿using Contracts;
 using MassTransit;
 using MassTransit.Definition;
-using MassTransit.Saga;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,7 +12,6 @@ using Product.Data.Context;
 using Product.Domain.Consumers;
 using SimpleDistributedTransactio.Infra.IoC;
 using System;
-using System.IO;
 using System.Threading.Tasks;
 
 namespace Console.Service
@@ -22,7 +20,6 @@ namespace Console.Service
     {
         private static async Task Main(string[] args)
         {
-
             var builder = new HostBuilder()
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
@@ -73,13 +70,7 @@ namespace Console.Service
             await builder.RunConsoleAsync().ConfigureAwait(false);
         }
 
-        static string ConfigureConnectionString(IServiceProvider provider)
-        {
-            var options = provider.GetRequiredService<IOptions<ConnectionString>>().Value;
-            return options.DbConnection;
-        }
-
-        static IBusControl ConfigureBus(IServiceProvider provider)
+        private static IBusControl ConfigureBus(IServiceProvider provider)
         {
             var options = provider.GetRequiredService<IOptions<AppConfig>>().Value;
 

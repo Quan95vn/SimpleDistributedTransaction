@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Contracts;
+﻿using Contracts;
 using MassTransit;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Product.Api.ViewModels;
 using Product.Domain.Interfaces;
+using System;
+using System.Threading.Tasks;
 
 namespace Product.Api.Controllers
 {
@@ -19,12 +14,12 @@ namespace Product.Api.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IRequestClient<CreateProduct> _createProductClient;
-        private readonly IProductRepository _productRepository;
+        private readonly IBusControl _bus;
 
-        public ProductController(IRequestClient<CreateProduct> createProductClient, IProductRepository productRepository)
+        public ProductController(IRequestClient<CreateProduct> createProductClient, IBusControl bus)
         {
             _createProductClient = createProductClient;
-            _productRepository = productRepository;
+            _bus = bus;
         }
 
         [HttpGet("{id}")]
@@ -43,9 +38,16 @@ namespace Product.Api.Controllers
         {
             try
             {
-               //await _productRepository.Add(new Domain.Models.Product(NewId.NextGuid(), value.Name , value.Price, value.QuantityInStock, value.CreatedDate));
                 if (!ModelState.IsValid)
                     throw new Exception("Invalid model state");
+
+                //await _bus.Publish<CreateProduct>(new {
+                //    ProductId = NewId.NextGuid(),
+                //    value.Name,
+                //    value.Price,
+                //    value.QuantityInStock,
+                //    value.CreatedDate
+                //});
 
                 var response = await _createProductClient.GetResponse<ProductCreated>(new
                 {
@@ -72,7 +74,6 @@ namespace Product.Api.Controllers
                     errors = ex.Message
                 });
             }
-
         }
     }
 }

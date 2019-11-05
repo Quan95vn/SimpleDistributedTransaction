@@ -2,8 +2,6 @@
 using MassTransit;
 using Microsoft.Extensions.Logging;
 using Product.Domain.Interfaces;
-using Product.Domain.Models;
-using System;
 using System.Threading.Tasks;
 
 namespace Product.Domain.Consumers
