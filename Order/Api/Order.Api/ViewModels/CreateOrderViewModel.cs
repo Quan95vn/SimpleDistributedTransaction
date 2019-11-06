@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Order.Api.ViewModels
 {
@@ -11,7 +12,7 @@ namespace Order.Api.ViewModels
 
         public string Address { get; set; }
 
-        public OrderDetailViewModel OrderDetails { get; set; }
+        public List<OrderDetailViewModel> OrderDetails { get; set; }
 
         public DateTime CreatedDate => DateTime.Now;
     }

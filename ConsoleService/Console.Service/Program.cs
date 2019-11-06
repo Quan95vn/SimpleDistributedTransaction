@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Order.Data.Context;
+using Order.Domain.Consumers;
 using Product.Data.Context;
 using Product.Domain.Consumers;
 using SimpleDistributedTransactio.Infra.IoC;
@@ -48,6 +49,7 @@ namespace Console.Service
                     services.AddMassTransit(cfg =>
                     {
                         cfg.AddConsumersFromNamespaceContaining<ProductConsumerAnchor>();
+                        cfg.AddConsumersFromNamespaceContaining<OrderConsumerAnchor>();
                         cfg.AddConsumersFromNamespaceContaining<ConsumerAnchor>();
 
                         //cfg.AddSagaStateMachinesFromNamespaceContaining<StateMachineAnchor>();

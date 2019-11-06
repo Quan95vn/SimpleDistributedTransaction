@@ -5,10 +5,8 @@ namespace Contracts
     /// <summary>
     /// Interface OrderSubmited
     /// </summary>
-    public interface OrderSubmited
+    public interface OrderSubmitted
     {
         Guid OrderId { get; }
-
-        DateTime CreatedDate { get; }
     }
 }

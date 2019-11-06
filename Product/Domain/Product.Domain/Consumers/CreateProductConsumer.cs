@@ -35,7 +35,7 @@ namespace Product.Domain.Consumers
                 context.Message.CreatedDate
             });
 
-            _log.LogDebug("Product created {ProductId}", context.Message.ProductId);
+            _log.LogInformation("Product created {ProductId}", context.Message.ProductId);
         }
     }
 }

@@ -5,6 +5,7 @@ namespace Order.Api.ViewModels
     /// <summary>
     /// Class OrderDetailViewModel
     /// </summary>
+    [Serializable]
     public class OrderDetailViewModel
     {
         public Guid ProductId { get; set; }

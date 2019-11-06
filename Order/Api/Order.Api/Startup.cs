@@ -15,6 +15,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Order.Data.Context;
 using SimpleDistributedTransactio.Infra.IoC;
+using Masstransit.Activities;
+using Contracts;
 
 namespace Order.Api
 {
@@ -34,7 +36,6 @@ namespace Order.Api
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DbConnection"));
             });
-
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             #region MassTransit
@@ -43,6 +44,8 @@ namespace Order.Api
             services.AddMassTransit(cfg =>
             {
                 cfg.AddBus(ConfigureBus);
+
+                cfg.AddRequestClient<ProcessOrder>();
             });
             services.AddSingleton<IHostedService, MassTransitApiHostedService>();
 
