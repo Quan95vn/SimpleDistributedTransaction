@@ -2,16 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Contracts.Models
+namespace Order.Domain.Activities.CreateOrder
 {
-    public interface Order
+    public interface CreateOrderArguments
     {
         Guid OrderId { get; }
 
         string Address { get; }
 
         DateTime CreatedDate { get; }
-
-        OrderDetail OrderDetails { get; }
     }
 }

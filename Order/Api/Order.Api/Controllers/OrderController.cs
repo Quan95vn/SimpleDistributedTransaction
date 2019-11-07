@@ -54,16 +54,13 @@ namespace Order.Api.Controllers
                     value.OrderDetails,
                 });
 
-                if (accepted.IsCompleted)
-                {
-                    if (accepted.IsFaulted)
-                        throw new Exception(accepted.Exception.Message);
-
-                    return Ok();
-                }
-
-                await rejected;
+                if (!accepted.IsCompleted)
                     throw new Exception(rejected.Exception.Message);
+
+                if (!string.IsNullOrEmpty(accepted.Exception.Message))
+                    throw new Exception(accepted.Exception.Message);
+
+                return Ok();
             }
             catch (Exception ex)
             {

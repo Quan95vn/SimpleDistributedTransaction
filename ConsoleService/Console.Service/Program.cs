@@ -8,8 +8,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Order.Data.Context;
+using Order.Domain.Activities.CreateOrder;
 using Order.Domain.Consumers;
 using Product.Data.Context;
+using Product.Domain.Activities.ReserveProduct;
 using Product.Domain.Consumers;
 using SimpleDistributedTransactio.Infra.IoC;
 using System;
@@ -85,6 +87,19 @@ namespace Console.Service
                 });
 
                 cfg.ConfigureEndpoints(provider, new KebabCaseEndpointNameFormatter());
+
+                string compQueue = "compensate_reserveproduct";
+                Uri compAddress = new Uri(string.Concat("rabbitmq://localhost/", compQueue));
+
+                cfg.ReceiveEndpoint(host, "execute_reserveproduct", e =>
+                {
+                    e.ExecuteActivityHost<ReserveProductActivity, ReserveProductArguments>(compAddress);
+                });
+
+                cfg.ReceiveEndpoint(host, "compensate_reserveproduct", e =>
+                {
+                    e.CompensateActivityHost<ReserveProductActivity, ReserveProductLog>();
+                });
             });
         }
     }

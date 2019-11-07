@@ -5,8 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="CreateOrder\" />
     <Folder Include="ReserveProduct\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MassTransit" Version="5.5.6" />
   </ItemGroup>
 
   <ItemGroup>

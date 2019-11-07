@@ -19,7 +19,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Infra.IoC\SimpleDistributedTransactio.Infra.IoC\SimpleDistributedTransactio.Infra.IoC.csproj" />
     <ProjectReference Include="..\..\..\Infra.MassTransit\Contracts\Contracts.csproj" />
-    <ProjectReference Include="..\..\Data\Order.Data\Order.Data.csproj" />
   </ItemGroup>
 
 </Project>
