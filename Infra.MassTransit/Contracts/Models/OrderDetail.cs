@@ -9,6 +9,8 @@ namespace Contracts.Models
     /// </summary>
     public interface OrderDetail
     {
+        Guid OrderId { get; }
+
         Guid ProductId { get; }
 
         int Quantity { get; }

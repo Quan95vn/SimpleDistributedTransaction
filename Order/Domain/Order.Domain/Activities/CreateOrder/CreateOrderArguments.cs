@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Contracts.Models;
+using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Order.Domain.Activities.CreateOrder
 {
@@ -11,5 +11,7 @@ namespace Order.Domain.Activities.CreateOrder
         string Address { get; }
 
         DateTime CreatedDate { get; }
+
+        IEnumerable<OrderDetail> OrderDetails { get; }
     }
 }

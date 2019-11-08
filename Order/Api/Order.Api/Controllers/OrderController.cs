@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using Contracts;
+﻿using Contracts;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using Order.Api.ViewModels;
+using System;
+using System.Threading.Tasks;
 
 namespace Order.Api.Controllers
 {
@@ -17,12 +13,12 @@ namespace Order.Api.Controllers
     {
         private readonly IBusControl _bus;
         private readonly IRequestClient<ProcessOrder> _processOrderClient;
+
         public OrderController(IBusControl bus, IRequestClient<ProcessOrder> processOrderClient)
         {
             _bus = bus;
             _processOrderClient = processOrderClient;
         }
-
 
         public async Task<IActionResult> Get()
         {
@@ -46,7 +42,7 @@ namespace Order.Api.Controllers
                 if (!ModelState.IsValid)
                     throw new Exception("Invalid model state");
 
-                var (accepted, rejected) = await _processOrderClient.GetResponse<OrderSubmitted, OrderRejected>(new
+                var response = await _processOrderClient.GetResponse<OrderSubmitted>(new
                 {
                     OrderId = NewId.NextGuid(),
                     value.Address,
@@ -54,13 +50,13 @@ namespace Order.Api.Controllers
                     value.OrderDetails,
                 });
 
-                if (!accepted.IsCompleted)
-                    throw new Exception(rejected.Exception.Message);
+                return Ok(new
+                {
+                    isSuccess = true,
+                    response.Message.OrderId
+                });
 
-                if (!string.IsNullOrEmpty(accepted.Exception.Message))
-                    throw new Exception(accepted.Exception.Message);
-
-                return Ok();
+                //return Ok();
             }
             catch (Exception ex)
             {

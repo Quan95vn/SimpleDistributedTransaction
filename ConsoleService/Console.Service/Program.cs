@@ -8,8 +8,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Order.Data.Context;
+using Order.Data.Repository;
 using Order.Domain.Activities.CreateOrder;
 using Order.Domain.Consumers;
+using Order.Domain.Interfaces;
 using Product.Data.Context;
 using Product.Domain.Activities.ReserveProduct;
 using Product.Domain.Consumers;
@@ -85,20 +87,46 @@ namespace Console.Service
                     h.Username(options.Username);
                     h.Password(options.Password);
                 });
-
                 cfg.ConfigureEndpoints(provider, new KebabCaseEndpointNameFormatter());
 
-                string compQueue = "compensate_reserveproduct";
-                Uri compAddress = new Uri(string.Concat("rabbitmq://localhost/", compQueue));
 
-                cfg.ReceiveEndpoint(host, "execute_reserveproduct", e =>
+                var compensateCreateOrderAddress = new Uri(string.Concat("rabbitmq://localhost/", "compensate_createorder"));
+                cfg.ReceiveEndpoint(host, "execute_createorder", e =>
                 {
-                    e.ExecuteActivityHost<ReserveProductActivity, ReserveProductArguments>(compAddress);
+                    e.ExecuteActivityHost<CreateOrderActivity, CreateOrderArguments>(compensateCreateOrderAddress, () => new
+                        CreateOrderActivity(provider.GetRequiredService<IOrderRepository>(), provider.GetRequiredService<IOrderDetailRepository>()));
+
+                });
+                cfg.ReceiveEndpoint(host, "compensate_createorder", e =>
+                {
+                    e.CompensateActivityHost<CreateOrderActivity, CreateOrderLog>(() => new
+                        CreateOrderActivity(provider.GetRequiredService<IOrderRepository>(), provider.GetRequiredService<IOrderDetailRepository>()));
                 });
 
+                var compensateReserveProductAddress = new Uri(string.Concat("rabbitmq://localhost/", "compensate_reserveproduct"));
+                cfg.ReceiveEndpoint(host, "execute_reserveproduct", e =>
+                {
+                    e.ExecuteActivityHost<CreateOrderActivity, CreateOrderArguments>(compensateReserveProductAddress, () => new
+                        CreateOrderActivity(provider.GetRequiredService<IOrderRepository>(), provider.GetRequiredService<IOrderDetailRepository>()));
+
+                });
                 cfg.ReceiveEndpoint(host, "compensate_reserveproduct", e =>
                 {
-                    e.CompensateActivityHost<ReserveProductActivity, ReserveProductLog>();
+                    e.CompensateActivityHost<CreateOrderActivity, CreateOrderLog>(() => new
+                        CreateOrderActivity(provider.GetRequiredService<IOrderRepository>(), provider.GetRequiredService<IOrderDetailRepository>()));
+                });
+
+                var compensateApproveOrderAddress = new Uri(string.Concat("rabbitmq://localhost/", "compensate_approveorder"));
+                cfg.ReceiveEndpoint(host, "execute_approveorder", e =>
+                {
+                    e.ExecuteActivityHost<CreateOrderActivity, CreateOrderArguments>(compensateApproveOrderAddress, () => new
+                        CreateOrderActivity(provider.GetRequiredService<IOrderRepository>(), provider.GetRequiredService<IOrderDetailRepository>()));
+
+                });
+                cfg.ReceiveEndpoint(host, "compensate_approveorder", e =>
+                {
+                    e.CompensateActivityHost<CreateOrderActivity, CreateOrderLog>(() => new
+                        CreateOrderActivity(provider.GetRequiredService<IOrderRepository>(), provider.GetRequiredService<IOrderDetailRepository>()));
                 });
             });
         }

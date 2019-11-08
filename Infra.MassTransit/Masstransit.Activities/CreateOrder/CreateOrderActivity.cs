@@ -11,11 +11,6 @@ namespace Masstransit.Activities.CreateOrder
         //private readonly IOrderRepository _orderRepository;
         //private readonly IOrderDetailRepository _orderDetailRepository;
 
-        public CreateOrderActivity()
-        {
-
-        }
-
         public async Task<ExecutionResult> Execute(ExecuteContext<CreateOrderArguments> context)
         {
 

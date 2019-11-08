@@ -1,7 +1,4 @@
 ﻿using MassTransit.Courier;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Product.Domain.Activities.ReserveProduct
@@ -10,7 +7,6 @@ namespace Product.Domain.Activities.ReserveProduct
     {
         public ReserveProductActivity()
         {
-
         }
 
         public async Task<ExecutionResult> Execute(ExecuteContext<ReserveProductArguments> context)
@@ -22,7 +18,6 @@ namespace Product.Domain.Activities.ReserveProduct
 
         public async Task<CompensationResult> Compensate(CompensateContext<ReserveProductLog> context)
         {
-
             return context.Compensated();
         }
     }

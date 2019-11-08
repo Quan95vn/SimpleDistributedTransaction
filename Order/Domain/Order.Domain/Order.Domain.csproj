@@ -16,7 +16,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Infra.MassTransit\Contracts\Contracts.csproj" />
-    <ProjectReference Include="..\..\..\Infra.MassTransit\Masstransit.Activities\Masstransit.Activities.csproj" />
   </ItemGroup>
 
 </Project>
