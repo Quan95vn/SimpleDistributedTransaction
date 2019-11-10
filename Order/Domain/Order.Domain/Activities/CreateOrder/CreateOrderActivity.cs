@@ -43,11 +43,16 @@ namespace Order.Domain.Activities.CreateOrder
                 await _orderDetailRepository.Add(model);
             }
 
+
             return context.Completed(new Log(order.OrderId));
         }
 
         public async Task<CompensationResult> Compensate(CompensateContext<CreateOrderLog> context)
         {
+            var order = await _orderRepository.GetByOrderId(context.Log.OrderId);
+            order.SetCanceledOrder();
+            await _orderRepository.Update(order);
+
             return context.Compensated();
         }
 

@@ -6,6 +6,6 @@ namespace Product.Domain.Activities.ReserveProduct
 {
     public interface ReserveProductLog
     {
-        Guid ProductId { get; }
+        IEnumerable<Guid> ProductId { get; }
     }
 }

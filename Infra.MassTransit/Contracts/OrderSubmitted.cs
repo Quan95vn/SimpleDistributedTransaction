@@ -10,5 +10,7 @@ namespace Contracts
     public interface OrderSubmitted
     {
         Guid OrderId { get; }
+
+        string ErrorMessage { get; }
     }
 }

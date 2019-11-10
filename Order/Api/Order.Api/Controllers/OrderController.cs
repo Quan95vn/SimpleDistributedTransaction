@@ -2,7 +2,10 @@
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Order.Api.ViewModels;
+using Order.Domain.Consumers;
 using System;
+using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Order.Api.Controllers
@@ -35,7 +38,7 @@ namespace Order.Api.Controllers
         }
 
         [HttpPost("post")]
-        public async Task<IActionResult> Post([FromBody] CreateOrderViewModel value)
+        public async Task<IActionResult> Post([FromBody] CreateOrderViewModel value, CancellationToken cancellationToken)
         {
             try
             {
@@ -48,15 +51,23 @@ namespace Order.Api.Controllers
                     value.Address,
                     value.CreatedDate,
                     value.OrderDetails,
-                });
+                }, cancellationToken);
+
+                // Base on ErrorMessage 
+                if (!string.IsNullOrEmpty(response.Message.ErrorMessage))
+                {
+                    return BadRequest(new
+                    {
+                        isSuccess = false,
+                        errors = response.Message.ErrorMessage
+                    });
+                }
 
                 return Ok(new
                 {
                     isSuccess = true,
                     response.Message.OrderId
                 });
-
-                //return Ok();
             }
             catch (Exception ex)
             {

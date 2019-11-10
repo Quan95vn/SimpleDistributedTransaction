@@ -7,5 +7,7 @@ namespace Contracts
     public interface OrderRejected
     {
         Guid OrderId { get; }
+
+        string ErrorMessage { get; }
     }
 }

@@ -17,5 +17,7 @@ namespace Contracts
         IEnumerable<OrderDetail> OrderDetails { get; }
 
         DateTime CreatedDate { get; }
+
+        string ErrorMessage { get; }
     }
 }

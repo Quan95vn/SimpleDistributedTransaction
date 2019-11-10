@@ -9,12 +9,14 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Order.Data.Context;
 using Order.Data.Repository;
+using Order.Domain.Activities.ApproveOrder;
 using Order.Domain.Activities.CreateOrder;
 using Order.Domain.Consumers;
 using Order.Domain.Interfaces;
 using Product.Data.Context;
 using Product.Domain.Activities.ReserveProduct;
 using Product.Domain.Consumers;
+using Product.Domain.Interfaces;
 using SimpleDistributedTransactio.Infra.IoC;
 using System;
 using System.Threading.Tasks;
@@ -106,27 +108,26 @@ namespace Console.Service
                 var compensateReserveProductAddress = new Uri(string.Concat("rabbitmq://localhost/", "compensate_reserveproduct"));
                 cfg.ReceiveEndpoint(host, "execute_reserveproduct", e =>
                 {
-                    e.ExecuteActivityHost<CreateOrderActivity, CreateOrderArguments>(compensateReserveProductAddress, () => new
-                        CreateOrderActivity(provider.GetRequiredService<IOrderRepository>(), provider.GetRequiredService<IOrderDetailRepository>()));
-
+                    e.ExecuteActivityHost<ReserveProductActivity, ReserveProductArguments>(compensateReserveProductAddress, () =>
+                        new ReserveProductActivity(provider.GetRequiredService<IProductRepository>()));
                 });
                 cfg.ReceiveEndpoint(host, "compensate_reserveproduct", e =>
                 {
-                    e.CompensateActivityHost<CreateOrderActivity, CreateOrderLog>(() => new
-                        CreateOrderActivity(provider.GetRequiredService<IOrderRepository>(), provider.GetRequiredService<IOrderDetailRepository>()));
+                    e.CompensateActivityHost<ReserveProductActivity, ReserveProductLog>(() =>
+                        new ReserveProductActivity(provider.GetRequiredService<IProductRepository>()));
                 });
 
                 var compensateApproveOrderAddress = new Uri(string.Concat("rabbitmq://localhost/", "compensate_approveorder"));
                 cfg.ReceiveEndpoint(host, "execute_approveorder", e =>
                 {
-                    e.ExecuteActivityHost<CreateOrderActivity, CreateOrderArguments>(compensateApproveOrderAddress, () => new
-                        CreateOrderActivity(provider.GetRequiredService<IOrderRepository>(), provider.GetRequiredService<IOrderDetailRepository>()));
+                    e.ExecuteActivityHost<ApproveOrderActivity, ApproveOrderArguments>(compensateApproveOrderAddress, () => new
+                        ApproveOrderActivity(provider.GetRequiredService<IOrderRepository>()));
 
                 });
                 cfg.ReceiveEndpoint(host, "compensate_approveorder", e =>
                 {
-                    e.CompensateActivityHost<CreateOrderActivity, CreateOrderLog>(() => new
-                        CreateOrderActivity(provider.GetRequiredService<IOrderRepository>(), provider.GetRequiredService<IOrderDetailRepository>()));
+                    e.CompensateActivityHost<ApproveOrderActivity, ApproveOrderLog>(() => new
+                        ApproveOrderActivity(provider.GetRequiredService<IOrderRepository>()));
                 });
             });
         }

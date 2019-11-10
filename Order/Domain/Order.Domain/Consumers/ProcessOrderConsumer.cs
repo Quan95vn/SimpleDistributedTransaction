@@ -1,7 +1,6 @@
 ﻿using Contracts;
 using MassTransit;
 using MassTransit.Courier;
-using MassTransit.Courier.Exceptions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Order.Domain.Interfaces;
@@ -19,11 +18,8 @@ namespace Order.Domain.Consumers
         private readonly IConfiguration _configuration;
         private readonly IOrderRepository _orderRepository;
 
-        public ProcessOrderConsumer(
-            ILoggerFactory loggerFactory,
-            IConfiguration configuration,
-            IOrderRepository orderRepository,
-            IOrderDetailRepository orderDetailRepository)
+
+        public ProcessOrderConsumer(ILoggerFactory loggerFactory, IConfiguration configuration, IOrderRepository orderRepository)
         {
             _log = loggerFactory.CreateLogger<ProcessOrderConsumer>();
             _configuration = configuration;
@@ -34,13 +30,18 @@ namespace Order.Domain.Consumers
         {
             try
             {
-                RoutingSlipBuilder builder = new RoutingSlipBuilder(context.Message.OrderId);
-
-                await context.RespondAsync<OrderSubmitted>(new
+                if (!string.IsNullOrEmpty(context.Message.ErrorMessage))
                 {
-                    context.Message.OrderId,
-                });
+                    await context.RespondAsync<OrderSubmitted>(new
+                    {
+                        context.Message.OrderId,
+                        context.Message.ErrorMessage
+                    });
 
+                    return;
+                }
+
+                RoutingSlipBuilder builder = new RoutingSlipBuilder(context.Message.OrderId);
                 // get configs
                 var settings = new Settings(_configuration);
 
@@ -48,17 +49,23 @@ namespace Order.Domain.Consumers
                 builder.AddActivity(settings.CreateOrderActivityName, settings.CreateOrderExecuteAddress);
                 builder.SetVariables(new { context.Message.OrderId, context.Message.Address, context.Message.CreatedDate, context.Message.OrderDetails });
 
-                //builder.AddActivity(settings.ReserveProductActivityName, settings.ReserveProductExecuteAddress);
-                //builder.SetVariables(new { context.Message.OrderDetails });
+                builder.AddActivity(settings.ReserveProductActivityName, settings.ReserveProductExecuteAddress);
+                builder.SetVariables(new { context.Message.OrderDetails });
 
-                //builder.AddActivity(settings.ApproveOrderActivityName, settings.ApproveOrderExecuteAddress);
-
+                builder.AddActivity(settings.ApproveOrderActivityName, settings.ApproveOrderExecuteAddress);
+                builder.SetVariables(new { context.Message.OrderId });
                 await context.Execute(builder.Build());
+              
+                await context.RespondAsync<OrderSubmitted>(new
+                {
+                    context.Message.OrderId
+                });
+              
             }
             catch (Exception ex)
             {
                 _log.LogError("Can not create Order {OrderId}", context.Message.OrderId);
-                throw new ActivityExecutionException(ex.Message);
+                throw new Exception(ex.Message);
             }
         }
 

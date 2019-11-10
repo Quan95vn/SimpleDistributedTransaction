@@ -29,5 +29,13 @@ namespace Product.Domain.Models
         public DateTime CreatedDate { get; private set; }
 
         public DateTime? UpdatedDate { get; private set; }
+
+        public int SetQuantity(int quantity)
+        {
+            QuantityInStock = quantity;
+            UpdatedDate = DateTime.Now;
+
+            return QuantityInStock;
+        }
     }
 }

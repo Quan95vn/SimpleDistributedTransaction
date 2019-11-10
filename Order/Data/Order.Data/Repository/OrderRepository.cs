@@ -1,9 +1,7 @@
-﻿using Order.Data.Context;
+﻿using Microsoft.EntityFrameworkCore;
+using Order.Data.Context;
 using Order.Domain.Interfaces;
-using Order.Domain.Models;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Order.Data.Repository
@@ -17,9 +15,20 @@ namespace Order.Data.Repository
             _context = context;
         }
 
+        public async Task<Domain.Models.Order> GetByOrderId(Guid orderId)
+        {
+            return await _context.Orders.FirstOrDefaultAsync(x => x.OrderId == orderId);
+        }
+
         public async Task Add(Domain.Models.Order order)
         {
-            await _context.AddAsync(order);
+            _context.Add(order);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task Update(Domain.Models.Order order)
+        {
+            _context.Update(order);
             await _context.SaveChangesAsync();
         }
     }

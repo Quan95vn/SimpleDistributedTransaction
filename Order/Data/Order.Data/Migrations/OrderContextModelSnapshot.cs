@@ -28,6 +28,8 @@ namespace Order.Data.Migrations
 
                     b.Property<DateTime>("CreatedDate");
 
+                    b.Property<byte>("Status");
+
                     b.Property<DateTime?>("UpdatedDate");
 
                     b.HasKey("OrderId");

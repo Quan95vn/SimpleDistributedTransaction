@@ -9,6 +9,7 @@ namespace Order.Domain.Models
             OrderId = orderId;
             Address = address;
             CreatedDate = createdDate;
+            Status = (byte)OrderStatus.Created;
         }
 
         public Guid OrderId { get; private set; }
@@ -18,5 +19,27 @@ namespace Order.Domain.Models
         public DateTime CreatedDate { get; private set; }
 
         public DateTime? UpdatedDate { get; private set; }
+
+        public byte Status { get; private set; }
+
+        public void SetApporveOrder()
+        {
+            Status = (byte)OrderStatus.Approved;
+        }
+
+        public void SetCanceledOrder()
+        {
+            Status = (byte)OrderStatus.Canceled;
+        }
+
+
+        public enum OrderStatus : byte
+        {
+            Created = 0,
+            Approved = 1,
+            Deliver = 2,
+            Completed = 3,
+            Canceled = 4
+        }
     }
 }
