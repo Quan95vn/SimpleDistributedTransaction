@@ -1,5 +1,6 @@
 ﻿using Contracts;
 using MassTransit;
+using MassTransit.Configuration;
 using MassTransit.Courier;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -16,15 +17,15 @@ namespace Order.Domain.Consumers
     /// </summary>
     public class ProcessOrderConsumer : IConsumer<ProcessOrder>
     {
-        private readonly ILogger<ProcessOrderConsumer> _log;
-        private readonly IConfiguration _configuration;
-        private readonly IOrderRepository _orderRepository;
 
-        public ProcessOrderConsumer(ILoggerFactory loggerFactory, IConfiguration configuration, IOrderRepository orderRepository)
+        private readonly IConfiguration _configuration;
+
+
+        public ProcessOrderConsumer(
+            IConfiguration configuration
+          )
         {
-            _log = loggerFactory.CreateLogger<ProcessOrderConsumer>();
             _configuration = configuration;
-            _orderRepository = orderRepository;
         }
 
         public async Task Consume(ConsumeContext<ProcessOrder> context)
@@ -43,15 +44,19 @@ namespace Order.Domain.Consumers
                 }
 
 
-            
 
-                RoutingSlipBuilder builder = new RoutingSlipBuilder(context.Message.OrderId);
+
                 // get configs
                 //var settings = new Settings(_configuration);
 
-                var a = new ProcessOrderRequestProxy(_configuration);
-                var b = new ResponseProxy();
-                
+                //var a = new ProcessOrderRequestProxy(_configuration);
+                //var b = new ResponseProxy();
+
+
+                //_configurator.Instance(a);
+                //_configurator.Instance(b);
+
+                //var a1 = _configurator.InputAddress;
 
                 // Add activities
                 //builder.AddActivity(settings.CreateOrderActivityName, settings.CreateOrderExecuteAddress);
@@ -72,12 +77,11 @@ namespace Order.Domain.Consumers
             }
             catch (Exception ex)
             {
-                _log.LogError("Can not create Order {OrderId}", context.Message.OrderId);
                 throw new Exception(ex.Message);
             }
         }
 
-      
+
 
 
 

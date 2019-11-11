@@ -18,8 +18,11 @@ namespace Order.Domain.Proxies
             _configuration = configuration;
         }
 
+
+
         protected override void BuildRoutingSlip(RoutingSlipBuilder builder, ConsumeContext<ProcessOrder> request)
         {
+
             // get configs
             var settings = new Settings(_configuration);
 
@@ -37,6 +40,12 @@ namespace Order.Domain.Proxies
     {
         protected override OrderSubmitted CreateResponseMessage(ConsumeContext<RoutingSlipCompleted> context, ProcessOrder request)
         {
+            context.RespondAsync<OrderSubmitted>(new
+            {
+                request.OrderId
+            });
+
+
             return new Abc();
            
             //throw new System.NotImplementedException();

@@ -1,5 +1,6 @@
 ﻿using Contracts;
 using MassTransit;
+using MassTransit.Configuration;
 using MassTransit.Definition;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -13,6 +14,7 @@ using Order.Domain.Activities.ApproveOrder;
 using Order.Domain.Activities.CreateOrder;
 using Order.Domain.Consumers;
 using Order.Domain.Interfaces;
+using Order.Domain.Proxies;
 using Product.Data.Context;
 using Product.Domain.Activities.ReserveProduct;
 using Product.Domain.Consumers;
@@ -61,6 +63,7 @@ namespace Console.Service
                         //cfg.AddSagaStateMachinesFromNamespaceContaining<StateMachineAnchor>();
                         cfg.AddBus(ConfigureBus);
                     });
+                    //services.AddSingleton<IReceiveEndpointConfigurator, IReceiveEndpointConfigurator>();
 
                     //services.AddSingleton(typeof(ISagaRepository<>), typeof(InMemorySagaRepository<>));
 
@@ -89,7 +92,17 @@ namespace Console.Service
                     h.Username(options.Username);
                     h.Password(options.Password);
                 });
-                cfg.ConfigureEndpoints(provider, new KebabCaseEndpointNameFormatter());
+
+                cfg.ReceiveEndpoint(host, "process-order", e =>
+                {
+                    e.Consumer(() => new ProcessOrderConsumer(provider.GetRequiredService<IConfiguration>()));
+
+                    var a = new ProcessOrderRequestProxy(provider.GetRequiredService<IConfiguration>());
+                    var b = new ResponseProxy();
+                    e.Instance(a);
+                    e.Instance(b);
+
+                });
 
 
                 var compensateCreateOrderAddress = new Uri(string.Concat("rabbitmq://localhost/", "compensate_createorder"));
