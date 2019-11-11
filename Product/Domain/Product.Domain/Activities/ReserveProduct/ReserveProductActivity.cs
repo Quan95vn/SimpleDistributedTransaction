@@ -29,7 +29,6 @@ namespace Product.Domain.Activities.ReserveProduct
 
                 var quantity = product.SetQuantity(product.QuantityInStock - orderDetail.Quantity);
                 
-                
                 if (quantity < 0)
                 {
                     var errorMessage = "Out of stock.";
