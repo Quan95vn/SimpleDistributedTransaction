@@ -1,10 +1,12 @@
 ﻿using Contracts;
+using Contracts.Models;
 using MassTransit;
 using MassTransit.Courier;
 using MassTransit.Courier.Contracts;
 using Microsoft.Extensions.Configuration;
 using System;
-using static MassTransit.MessageHeaders;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Order.Domain.Proxies
 {
@@ -22,7 +24,6 @@ namespace Order.Domain.Proxies
 
         protected override void BuildRoutingSlip(RoutingSlipBuilder builder, ConsumeContext<ProcessOrder> request)
         {
-
             // get configs
             var settings = new Settings(_configuration);
 
@@ -30,30 +31,43 @@ namespace Order.Domain.Proxies
             builder.AddActivity(settings.CreateOrderActivityName, settings.CreateOrderExecuteAddress);
             builder.SetVariables(new { request.Message.OrderId, request.Message.Address, request.Message.CreatedDate, request.Message.OrderDetails });
 
-            builder.AddActivity(settings.ReserveProductActivityName, settings.ReserveProductExecuteAddress);
-            builder.SetVariables(new { request.Message.OrderDetails });
+            //builder.AddActivity(settings.ReserveProductActivityName, settings.ReserveProductExecuteAddress);
+            //builder.SetVariables(new { request.Message.OrderDetails });
+
+            request.Message.ErrorMessage = request.Message.ErrorMessage;
         }
     }
 
-    public class ResponseProxy :
-        RoutingSlipResponseProxy<ProcessOrder, OrderSubmitted>
+    public class ResponseProxy : RoutingSlipResponseProxy<ProcessOrder, OrderSubmitted>
     {
         protected override OrderSubmitted CreateResponseMessage(ConsumeContext<RoutingSlipCompleted> context, ProcessOrder request)
         {
-            context.RespondAsync<OrderSubmitted>(new
-            {
-                request.OrderId
-            });
-
-
-            return new Abc();
-           
-            //throw new System.NotImplementedException();
+            var a = context.Message.Variables;
+            return new Submitted(request.OrderId, request.ErrorMessage);
         }
     }
 
-    class Abc : OrderSubmitted
+    //class OrderProcess : ProcessOrder
+    //{
+    //    public Guid OrderId => throw new NotImplementedException();
+
+    //    public string Address => throw new NotImplementedException();
+
+    //    public IEnumerable<OrderDetail> OrderDetails => throw new NotImplementedException();
+
+    //    public DateTime CreatedDate => throw new NotImplementedException();
+
+    //    public string ErrorMessage => throw new NotImplementedException();
+    //}
+
+    class Submitted : OrderSubmitted
     {
+        public Submitted(Guid orderId, string errorMessage)
+        {
+            OrderId = orderId;
+            ErrorMessage = errorMessage;
+        }
+
         public Guid OrderId { get; set; }
 
         public string ErrorMessage { get; set; }

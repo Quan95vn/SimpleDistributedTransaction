@@ -28,15 +28,17 @@ namespace Product.Domain.Activities.ReserveProduct
                 if (product == null) continue;
 
                 var quantity = product.SetQuantity(product.QuantityInStock - orderDetail.Quantity);
-                
+
                 if (quantity < 0)
                 {
                     var errorMessage = "Out of stock.";
-                    await context.Publish<ProcessOrder>(new
+
+                    await context.Publish<OrderSubmitted>(new
                     {
                         ErrorMessage = errorMessage
                     });
-                    throw new RoutingSlipException(errorMessage);
+                    context.Terminate();
+                    //throw new Exception(errorMessage);
                 }
 
                 await _productRepository.Update(product);

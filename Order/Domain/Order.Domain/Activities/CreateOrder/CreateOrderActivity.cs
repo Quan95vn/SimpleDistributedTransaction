@@ -1,4 +1,5 @@
-﻿using MassTransit;
+﻿using Contracts;
+using MassTransit;
 using MassTransit.Courier;
 using Order.Domain.Interfaces;
 using System;
@@ -20,6 +21,10 @@ namespace Order.Domain.Activities.CreateOrder
         public async Task<ExecutionResult> Execute(ExecuteContext<CreateOrderArguments> context)
         {
             var order = context.Arguments;
+
+            var errorMessage = "Out of stock.";
+            order.ErrorMessage = errorMessage;
+            return context.Completed(new Log(order.OrderId));
 
             await _orderRepository.Add
             (
@@ -43,7 +48,6 @@ namespace Order.Domain.Activities.CreateOrder
                 await _orderDetailRepository.Add(model);
             }
 
-
             return context.Completed(new Log(order.OrderId));
         }
 
@@ -52,6 +56,11 @@ namespace Order.Domain.Activities.CreateOrder
             var order = await _orderRepository.GetByOrderId(context.Log.OrderId);
             order.SetCanceledOrder();
             await _orderRepository.Update(order);
+
+            //await context.Publish<ProcessOrder>(new
+            //{
+            //    ErrorMessage = "Error"
+            //});
 
             return context.Compensated();
         }

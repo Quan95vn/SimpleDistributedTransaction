@@ -2,6 +2,7 @@
 using MassTransit;
 using MassTransit.Configuration;
 using MassTransit.Courier;
+using MassTransit.Transports.InMemory.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Order.Domain.Interfaces;
@@ -17,13 +18,11 @@ namespace Order.Domain.Consumers
     /// </summary>
     public class ProcessOrderConsumer : IConsumer<ProcessOrder>
     {
-
         private readonly IConfiguration _configuration;
-
 
         public ProcessOrderConsumer(
             IConfiguration configuration
-          )
+        )
         {
             _configuration = configuration;
         }
@@ -32,33 +31,21 @@ namespace Order.Domain.Consumers
         {
             try
             {
-                if (!string.IsNullOrEmpty(context.Message.ErrorMessage))
-                {
-                    await context.RespondAsync<OrderSubmitted>(new
-                    {
-                        context.Message.OrderId,
-                        context.Message.ErrorMessage
-                    });
+                //if (!string.IsNullOrEmpty(context.Message.ErrorMessage))
+                //{
+                //    await context.RespondAsync<ProcessOrder>(new
+                //    {
+                //        context.Message.OrderId,
+                //        context.Message.ErrorMessage
+                //    });
 
-                    return;
-                }
+                //    return;
+                //}
 
-
-
-
-                // get configs
+                //// get configs
                 //var settings = new Settings(_configuration);
-
-                //var a = new ProcessOrderRequestProxy(_configuration);
-                //var b = new ResponseProxy();
-
-
-                //_configurator.Instance(a);
-                //_configurator.Instance(b);
-
-                //var a1 = _configurator.InputAddress;
-
-                // Add activities
+                //// Add activities
+                //var builder = new RoutingSlipBuilder(context.Message.OrderId);
                 //builder.AddActivity(settings.CreateOrderActivityName, settings.CreateOrderExecuteAddress);
                 //builder.SetVariables(new { context.Message.OrderId, context.Message.Address, context.Message.CreatedDate, context.Message.OrderDetails });
 
@@ -73,7 +60,6 @@ namespace Order.Domain.Consumers
                 //{
                 //    context.Message.OrderId
                 //});
-
             }
             catch (Exception ex)
             {

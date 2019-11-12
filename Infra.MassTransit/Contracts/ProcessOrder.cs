@@ -18,6 +18,6 @@ namespace Contracts
 
         DateTime CreatedDate { get; }
 
-        string ErrorMessage { get; }
+        string ErrorMessage { get; set; }
     }
 }

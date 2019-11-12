@@ -1,5 +1,6 @@
 ﻿using Contracts;
 using MassTransit;
+using MassTransit.BusConfigurators;
 using MassTransit.Configuration;
 using MassTransit.Definition;
 using Microsoft.EntityFrameworkCore;
@@ -54,6 +55,7 @@ namespace Console.Service
                     });
 
                     services.Configure<AppConfig>(hostContext.Configuration.GetSection("AppConfig"));
+
                     services.AddMassTransit(cfg =>
                     {
                         cfg.AddConsumersFromNamespaceContaining<ProductConsumerAnchor>();
@@ -63,7 +65,6 @@ namespace Console.Service
                         //cfg.AddSagaStateMachinesFromNamespaceContaining<StateMachineAnchor>();
                         cfg.AddBus(ConfigureBus);
                     });
-                    //services.AddSingleton<IReceiveEndpointConfigurator, IReceiveEndpointConfigurator>();
 
                     //services.AddSingleton(typeof(ISagaRepository<>), typeof(InMemorySagaRepository<>));
 
@@ -92,6 +93,7 @@ namespace Console.Service
                     h.Username(options.Username);
                     h.Password(options.Password);
                 });
+
 
                 cfg.ReceiveEndpoint(host, "process-order", e =>
                 {
@@ -142,6 +144,8 @@ namespace Console.Service
                     e.CompensateActivityHost<ApproveOrderActivity, ApproveOrderLog>(() => new
                         ApproveOrderActivity(provider.GetRequiredService<IOrderRepository>()));
                 });
+
+              
             });
         }
     }
