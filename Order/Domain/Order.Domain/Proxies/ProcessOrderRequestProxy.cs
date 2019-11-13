@@ -40,10 +40,18 @@ namespace Order.Domain.Proxies
 
     public class ResponseProxy : RoutingSlipResponseProxy<ProcessOrder, OrderSubmitted>
     {
+
         protected override OrderSubmitted CreateResponseMessage(ConsumeContext<RoutingSlipCompleted> context, ProcessOrder request)
         {
-            var a = context.Message.Variables;
-            return new Submitted(request.OrderId, request.ErrorMessage);
+
+            var s = nameof(request.ErrorMessage);
+            char[] a = s.ToCharArray();
+            a[0] = char.ToLower(a[0]);
+            var a1 = new string(a);
+
+            var variables = context.Message.Variables;
+            var a2 = variables[a1].ToString();
+            return new Submitted(request.OrderId, a2);
         }
     }
 

@@ -24,7 +24,7 @@ namespace Order.Domain.Activities.CreateOrder
 
             var errorMessage = "Out of stock.";
             order.ErrorMessage = errorMessage;
-            return context.Completed(new Log(order.OrderId));
+            return context.CompletedWithVariables(new Log(order.OrderId), new { ErrorMessage = errorMessage });
 
             await _orderRepository.Add
             (
@@ -56,11 +56,6 @@ namespace Order.Domain.Activities.CreateOrder
             var order = await _orderRepository.GetByOrderId(context.Log.OrderId);
             order.SetCanceledOrder();
             await _orderRepository.Update(order);
-
-            //await context.Publish<ProcessOrder>(new
-            //{
-            //    ErrorMessage = "Error"
-            //});
 
             return context.Compensated();
         }

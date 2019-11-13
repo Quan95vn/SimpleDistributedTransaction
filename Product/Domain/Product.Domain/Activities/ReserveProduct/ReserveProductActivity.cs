@@ -31,14 +31,15 @@ namespace Product.Domain.Activities.ReserveProduct
 
                 if (quantity < 0)
                 {
-                    var errorMessage = "Out of stock.";
+                    //var errorMessage = "Out of stock.";
 
-                    await context.Publish<OrderSubmitted>(new
-                    {
-                        ErrorMessage = errorMessage
-                    });
-                    context.Terminate();
-                    //throw new Exception(errorMessage);
+                    //await context.Publish<OrderSubmitted>(new
+                    //{
+                    //    ErrorMessage = errorMessage
+                    //});
+
+                    return context.Faulted(new Exception("Out of stock."));
+                    //throw new Exception("Out of stock.");
                 }
 
                 await _productRepository.Update(product);
