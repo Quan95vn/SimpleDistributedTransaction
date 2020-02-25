@@ -32,7 +32,6 @@ namespace Order.Domain.Models
             Status = (byte)OrderStatus.Canceled;
         }
 
-
         public enum OrderStatus : byte
         {
             Created = 0,

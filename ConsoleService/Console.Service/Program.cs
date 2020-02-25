@@ -1,5 +1,7 @@
 ﻿using Contracts;
 using MassTransit;
+using MassTransit.BusConfigurators;
+using MassTransit.Configuration;
 using MassTransit.Definition;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -54,6 +56,7 @@ namespace Console.Service
                     });
 
                     services.Configure<AppConfig>(hostContext.Configuration.GetSection("AppConfig"));
+
                     services.AddMassTransit(cfg =>
                     {
                         cfg.AddConsumersFromNamespaceContaining<ProductConsumerAnchor>();

@@ -1,5 +1,6 @@
 ﻿using Contracts;
 using MassTransit;
+using MassTransit.Courier.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Order.Api.ViewModels;
 using Order.Domain.Consumers;

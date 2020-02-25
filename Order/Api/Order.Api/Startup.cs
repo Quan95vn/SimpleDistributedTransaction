@@ -36,6 +36,7 @@ namespace Order.Api
             #region MassTransit
 
             services.Configure<AppConfig>(Configuration.GetSection("AppConfig"));
+
             services.AddMassTransit(cfg =>
             {
                 cfg.AddBus(ConfigureBus);
