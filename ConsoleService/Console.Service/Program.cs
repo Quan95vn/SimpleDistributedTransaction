@@ -12,7 +12,9 @@ using Order.Data.Repository;
 using Order.Domain.Activities.ApproveOrder;
 using Order.Domain.Activities.CreateOrder;
 using Order.Domain.Consumers;
+using Order.Domain.DomainHandler;
 using Order.Domain.Interfaces;
+using Order.Domain.Proxies;
 using Product.Data.Context;
 using Product.Domain.Activities.ReserveProduct;
 using Product.Domain.Consumers;
@@ -89,8 +91,18 @@ namespace Console.Service
                     h.Username(options.Username);
                     h.Password(options.Password);
                 });
-                cfg.ConfigureEndpoints(provider, new KebabCaseEndpointNameFormatter());
+                //cfg.ConfigureEndpoints(provider, new KebabCaseEndpointNameFormatter());
 
+                cfg.ReceiveEndpoint(host, "process-order", e =>
+                {
+                    e.Consumer(() => new ProcessOrderConsumer(provider.GetRequiredService<IConfiguration>()));
+
+                    var a = new ProcessOrderRequestProxy(provider.GetRequiredService<IConfiguration>());
+                    var b = new ResponseProxy();
+                    e.Instance(a);
+                    e.Instance(b);
+
+                });
 
                 var compensateCreateOrderAddress = new Uri(string.Concat("rabbitmq://localhost/", "compensate_createorder"));
                 cfg.ReceiveEndpoint(host, "execute_createorder", e =>
@@ -129,6 +141,11 @@ namespace Console.Service
                     e.CompensateActivityHost<ApproveOrderActivity, ApproveOrderLog>(() => new
                         ApproveOrderActivity(provider.GetRequiredService<IOrderRepository>()));
                 });
+
+                //cfg.ReceiveEndpoint("domain_notification_handler", e =>
+                //{
+                //    e.Consumer<DomainNotificationHandler>();
+                //});
             });
         }
     }

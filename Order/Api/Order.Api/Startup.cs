@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Order.Data.Context;
+using Order.Domain.DomainHandler;
 using SimpleDistributedTransactio.Infra.IoC;
 using System;
 
@@ -51,6 +52,8 @@ namespace Order.Api
         private void RegisterServices(IServiceCollection services)
         {
             DependencyContainer.RegisterServices(services);
+            services.AddScoped<DomainNotificationHandler>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

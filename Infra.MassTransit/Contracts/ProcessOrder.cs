@@ -1,4 +1,5 @@
 ﻿using Contracts.Models;
+using MassTransit;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,7 +9,7 @@ namespace Contracts
     /// <summary>
     /// Interface OrderCreated
     /// </summary>
-    public interface ProcessOrder
+    public interface ProcessOrder : CorrelatedBy<Guid>
     {
         Guid OrderId { get; }
 

@@ -28,6 +28,7 @@ namespace Order.Domain.Activities.ApproveOrder
 
         public async Task<CompensationResult> Compensate(CompensateContext<ApproveOrderLog> context)
         {
+            context.Log.ErrorMessage = "abc";
             throw new NotImplementedException();
         }
 
@@ -39,6 +40,7 @@ namespace Order.Domain.Activities.ApproveOrder
             }
 
             public Guid OrderId { get; set; }
+            public string ErrorMessage { get; set; }
         }
     }
 }

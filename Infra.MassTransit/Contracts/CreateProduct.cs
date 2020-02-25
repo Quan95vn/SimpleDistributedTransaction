@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MassTransit;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -7,7 +8,7 @@ namespace Contracts
     /// <summary>
     /// Interface CreateProduct
     /// </summary>
-    public interface CreateProduct
+    public interface CreateProduct : CorrelatedBy<Guid>
     {
         Guid ProductId { get; }
 

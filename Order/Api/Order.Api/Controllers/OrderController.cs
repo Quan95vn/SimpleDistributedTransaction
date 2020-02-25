@@ -3,6 +3,7 @@ using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Order.Api.ViewModels;
 using Order.Domain.Consumers;
+using Order.Domain.DomainHandler;
 using System;
 using System.Net;
 using System.Threading;
@@ -17,7 +18,9 @@ namespace Order.Api.Controllers
         private readonly IBusControl _bus;
         private readonly IRequestClient<ProcessOrder> _processOrderClient;
 
-        public OrderController(IBusControl bus, IRequestClient<ProcessOrder> processOrderClient)
+        public OrderController(
+            IBusControl bus, 
+            IRequestClient<ProcessOrder> processOrderClient) 
         {
             _bus = bus;
             _processOrderClient = processOrderClient;
@@ -52,22 +55,8 @@ namespace Order.Api.Controllers
                     value.CreatedDate,
                     value.OrderDetails,
                 }, cancellationToken);
-
-                // Base on ErrorMessage 
-                if (!string.IsNullOrEmpty(response.Message.ErrorMessage))
-                {
-                    return BadRequest(new
-                    {
-                        isSuccess = false,
-                        errors = response.Message.ErrorMessage
-                    });
-                }
-
-                return Ok(new
-                {
-                    isSuccess = true,
-                    response.Message.OrderId
-                });
+                var a = response.Message.ErrorMessage;
+                return Ok(a);
             }
             catch (Exception ex)
             {

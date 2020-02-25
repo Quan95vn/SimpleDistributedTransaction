@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Order.Data.Context;
 using Order.Data.Repository;
+using Order.Domain.DomainHandler;
 using Order.Domain.Interfaces;
 using Product.Data.Context;
 using Product.Data.Repository;
@@ -13,6 +14,7 @@ namespace SimpleDistributedTransactio.Infra.IoC
     {
         public static void RegisterServices(IServiceCollection services)
         {
+
             //Data
             services.AddTransient<IProductRepository, ProductRepository>();
             services.AddTransient<IOrderRepository, OrderRepository>();
@@ -20,6 +22,8 @@ namespace SimpleDistributedTransactio.Infra.IoC
 
             services.AddTransient<ProductDbContext>();
             services.AddTransient<OrderDbContext>();
+
+
         }
     }
 }

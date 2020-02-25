@@ -1,4 +1,5 @@
-﻿using MassTransit;
+﻿using Contracts;
+using MassTransit;
 using MassTransit.Courier;
 using Order.Domain.Interfaces;
 using System;
@@ -21,30 +22,12 @@ namespace Order.Domain.Activities.CreateOrder
         {
             var order = context.Arguments;
 
-            await _orderRepository.Add
-            (
-                new Models.Order(
-                    order.OrderId,
-                    order.Address,
-                    order.CreatedDate
-                )
-            );
-
-            foreach (var orderDetail in order.OrderDetails)
+            await context.Publish<SubmitOrder>(new
             {
-                var model = new Models.OrderDetail
-                (
-                    NewId.NextGuid(),
-                    order.OrderId,
-                    orderDetail.ProductId,
-                    orderDetail.Quantity
-                );
+                Address = "QWERTYUIOP"
+            });
 
-                await _orderDetailRepository.Add(model);
-            }
-
-
-            return context.Completed(new Log(order.OrderId));
+            return context.Completed(new Log(order.OrderId, "QTN123"));
         }
 
         public async Task<CompensationResult> Compensate(CompensateContext<CreateOrderLog> context)
@@ -58,12 +41,15 @@ namespace Order.Domain.Activities.CreateOrder
 
         private class Log : CreateOrderLog
         {
-            public Log(Guid orderId)
+            public Log(Guid orderId, string address)
             {
                 OrderId = orderId;
+                Address = address;
             }
 
             public Guid OrderId { get; }
+
+            public string Address { get; }
         }
     }
 }

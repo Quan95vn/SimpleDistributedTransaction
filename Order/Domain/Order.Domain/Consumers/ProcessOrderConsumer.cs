@@ -4,6 +4,7 @@ using MassTransit.Courier;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Order.Domain.Interfaces;
+using Order.Domain.Proxies;
 using System;
 using System.Threading.Tasks;
 
@@ -14,57 +15,45 @@ namespace Order.Domain.Consumers
     /// </summary>
     public class ProcessOrderConsumer : IConsumer<ProcessOrder>
     {
-        private readonly ILogger<ProcessOrderConsumer> _log;
         private readonly IConfiguration _configuration;
-        private readonly IOrderRepository _orderRepository;
 
-
-        public ProcessOrderConsumer(ILoggerFactory loggerFactory, IConfiguration configuration, IOrderRepository orderRepository)
+        public ProcessOrderConsumer(IConfiguration configuration)
         {
-            _log = loggerFactory.CreateLogger<ProcessOrderConsumer>();
             _configuration = configuration;
-            _orderRepository = orderRepository;
         }
 
         public async Task Consume(ConsumeContext<ProcessOrder> context)
         {
             try
             {
-                if (!string.IsNullOrEmpty(context.Message.ErrorMessage))
-                {
-                    await context.RespondAsync<OrderSubmitted>(new
-                    {
-                        context.Message.OrderId,
-                        context.Message.ErrorMessage
-                    });
+                //RoutingSlipBuilder builder = new RoutingSlipBuilder(context.Message.OrderId);
+                //var settings = new Settings(_configuration);
 
-                    return;
-                }
+                //// Add activities
+                //builder.AddActivity(settings.CreateOrderActivityName, settings.CreateOrderExecuteAddress);
+                //builder.SetVariables(new { context.Message.OrderId, context.Message.Address, context.Message.CreatedDate, context.Message.OrderDetails });
 
-                RoutingSlipBuilder builder = new RoutingSlipBuilder(context.Message.OrderId);
-                // get configs
-                var settings = new Settings(_configuration);
+                ////builder.AddActivity(settings.ReserveProductActivityName, settings.ReserveProductExecuteAddress);
+                ////builder.SetVariables(new { context.Message.OrderDetails });
 
-                // Add activities
-                builder.AddActivity(settings.CreateOrderActivityName, settings.CreateOrderExecuteAddress);
-                builder.SetVariables(new { context.Message.OrderId, context.Message.Address, context.Message.CreatedDate, context.Message.OrderDetails });
+                ////builder.AddActivity(settings.ApproveOrderActivityName, settings.ApproveOrderExecuteAddress);
+                ////builder.SetVariables(new { context.Message.OrderId });
+                //await context.Execute(builder.Build());
 
-                builder.AddActivity(settings.ReserveProductActivityName, settings.ReserveProductExecuteAddress);
-                builder.SetVariables(new { context.Message.OrderDetails });
 
-                builder.AddActivity(settings.ApproveOrderActivityName, settings.ApproveOrderExecuteAddress);
-                builder.SetVariables(new { context.Message.OrderId });
-                await context.Execute(builder.Build());
-              
-                await context.RespondAsync<OrderSubmitted>(new
-                {
-                    context.Message.OrderId
-                });
-              
+
+                //await context.RespondAsync<OrderSubmitted>(new
+                //{
+                //    context.Message.OrderId,
+                //    context.Message.ErrorMessage,
+                //    context.Message.Address
+                //});
+
+                var a = new ProcessOrderRequestProxy(_configuration);
+
             }
             catch (Exception ex)
             {
-                _log.LogError("Can not create Order {OrderId}", context.Message.OrderId);
                 throw new Exception(ex.Message);
             }
         }

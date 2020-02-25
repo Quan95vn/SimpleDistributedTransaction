@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Contracts
+namespace Order.Domain.Consumers
 {
-    public struct ConsumerAnchor 
+    public struct OrderConsumerAnchor
     {
     }
 }
