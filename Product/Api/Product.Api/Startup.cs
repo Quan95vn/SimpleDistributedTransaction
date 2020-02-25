@@ -35,6 +35,7 @@ namespace Product.Api
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+
             #region MassTransit
 
             services.Configure<AppConfig>(Configuration.GetSection("AppConfig"));

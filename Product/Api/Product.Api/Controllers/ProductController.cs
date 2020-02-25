@@ -41,6 +41,14 @@ namespace Product.Api.Controllers
                 if (!ModelState.IsValid)
                     throw new Exception("Invalid model state");
 
+                //await _bus.Publish<CreateProduct>(new {
+                //    ProductId = NewId.NextGuid(),
+                //    value.Name,
+                //    value.Price,
+                //    value.QuantityInStock,
+                //    value.CreatedDate
+                //});
+
                 var response = await _createProductClient.GetResponse<ProductCreated>(new
                 {
                     ProductId = NewId.NextGuid(),
